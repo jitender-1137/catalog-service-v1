@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: sp-qa-catalog-backend
+    app.kubernetes.io/instance: sp-qa-catalog-backend-instance
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: qa-catalog-backend
+    app.kubernetes.io/managed-by: kubectl
+  name: sp-qa-catalog-backend
+spec:
+  selector:
+    app: sp-qa-catalog-backend
+  type: LoadBalancer
+  ports:
+   -  protocol: TCP
+      port: 80
+      targetPort: 8081

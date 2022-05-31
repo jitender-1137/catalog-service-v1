@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+   name: sp-catalog-qa
+spec: 
+   type: ExternalName
+   externalName: yaari-qa-duplicate-database-cluster-tf-qa-eks-cluster.cluster-caub6fvh4hyp.ap-south-1.rds.amazonaws.com

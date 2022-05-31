@@ -1,0 +1,6 @@
+[
+  {
+    "name": "qa-catalog-service",
+    "imageUri": "746460560240.dkr.ecr.ap-south-1.amazonaws.com/catalog-service-v1:0.0.2"
+  }
+]

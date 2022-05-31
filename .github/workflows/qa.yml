@@ -1,0 +1,55 @@
+name: Docker Build and Deploy to ECR
+
+on:
+  push:
+    branches: [ qa ]
+
+jobs:
+  
+  build:
+    
+    name: Build Image
+    runs-on: ubuntu-latest
+   
+    steps:
+
+    - name: Check out code
+      uses: actions/checkout@v2
+    - uses: azure/setup-kubectl@v2.0
+      with:
+        version: 'v1.23.3' # default st stable
+      id: install
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_QA }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_QA }}
+        aws-region: ap-south-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: 746460560240.dkr.ecr.ap-south-1.amazonaws.com
+        ECR_REPOSITORY: seller-portal-qa
+        IMAGE_TAG: catalog-service-qa-latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: update kubeconfig
+      run : aws eks update-kubeconfig --name sp-eks-qa --region ap-south-1
+    - name: Deploy image to Amazon Eks
+      run : |
+        kubectl apply -f k8s-deploy/qa/documentdb-external-service.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/docdb-secrets.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/postgresdb-external-service.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/pgs-secrets.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/redis-external-service.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/deployment.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/service.yml --namespace sp-catalog-qa --record
+        kubectl apply -f k8s-deploy/qa/alb_ingress.yml --namespace sp-catalog-qa --record
+        kubectl rollout restart -f k8s-deploy/qa/deployment.yml --namespace sp-catalog-qa
+        kubectl get svc --namespace sp-catalog-qa

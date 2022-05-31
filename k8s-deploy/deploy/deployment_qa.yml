@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: sp-qa-catalog-backend
+    app.kubernetes.io/instance: sp-qa-catalog-backend-instance
+    app.kubernetes.io/version: '1.0.0'
+    app.kubernetes.io/managed-by: kubectl
+  name: sp-qa-catalog-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sp-qa-catalog-backend
+  template:
+    metadata:
+      labels:
+        app: sp-qa-catalog-backend
+    spec:
+      containers:
+        - image: 746460560240.dkr.ecr.ap-south-1.amazonaws.com/seller-portal-qa:catalog-service-qa-latest
+          imagePullPolicy: Always
+          name: sp-qa-catalog-backend
+          ports:
+            - containerPort: 8081
+#           env: 
+#             - name: DB_HOSTNAME
+#               value: "yaari-dev-duplicate-database-cluster"
+#             - name: DB_USERNAME
+#               value: "postgres"
+#             - name: DB_PORT
+#               value: "5432"
+#             - name: DB_PASSWORD
+#               valueFrom: 
+#                 secretKeyRef:
+#                   name: pgsdb-secrets
+#                   key: pgsdb-password
+#             - name: DB_HOSTNAME
+#               value: "sp-devbackend"
+#             - name: DB_USERNAME
+#               value: "admin"
+#             - name: DB_PORT
+#               value: "27017"
+#             - name: DB_PASSWORD
+#               valueFrom: 
+#                 secretKeyRef:
+#                   name: docdb-secrets
+#                   key: docdb-password

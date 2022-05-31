@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <appender name="FILEERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>warn</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{30}\(%line\) - Request-id : %X{requestId} - %msg%n</pattern>
+        </encoder>
+        <file>/var/tmp/logs/catalogservice_service_error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/tmp/logs/catalogservice_service_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name="FILEDEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{30}\(%line\) - Request-id : %X{requestId} - %msg%n</pattern>
+        </encoder>
+        <file>/var/tmp/logs/catalogservice_service_debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/tmp/logs/catalogservice_service_debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{30}\(%line\) - Request-id : %X{requestId} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <logger name="org.springframework" level="ERROR">
+        <appender-ref ref="FILEERROR"/>
+    </logger>
+    <logger name="com.yaari" level="DEBUG">
+        <appender-ref ref="FILEDEBUG"/>
+    </logger>
+</configuration>

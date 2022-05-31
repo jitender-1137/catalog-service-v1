@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: sp-catalog-qa
+    app.kubernetes.io/instance: sp-catalog-qa-instance
+    app.kubernetes.io/version: '1.0.0'
+    app.kubernetes.io/managed-by: kubectl
+  name: sp-catalog-qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sp-catalog-qa
+  template:
+    metadata:
+      labels:
+        app: sp-catalog-qa
+    spec:
+      containers:
+        - image: 746460560240.dkr.ecr.ap-south-1.amazonaws.com/seller-portal-qa:catalog-service-qa-latest
+          imagePullPolicy: Always
+          name: sp-catalog-qa
+          ports:
+            - containerPort: 8081
+          env: 
+            - name: DB_HOSTNAME_PGS
+              value: "yaari-qa-duplicate-database-cluster-tf-qa-eks.caub6fvh4hyp.ap-south-1.rds.amazonaws.com"
+            - name: DB_USERNAME_PGS
+              value: "postgres"
+            - name: DB_PORT_PGS
+              value: "5432"
+            - name: DB_PASSWORD_PGS
+              valueFrom: 
+                secretKeyRef:
+                  name: pgsdb-secrets
+                  key: pgsdb-password
+            - name: DB_HOSTNAME_DOCDB
+              value: "sp-catalog-qa-docdb"
+            - name: DB_USERNAME_DOCDB
+              value: "adminuser"
+            - name: DB_PORT_DOCDB
+              value: "27017"
+            - name: DB_PASSWORD_DOCDB
+              valueFrom: 
+                secretKeyRef:
+                  name: docdb-secrets
+                  key: docdb-password
+            - name: DB_HOSTNAME_REDIS
+              value: "sp-catalog-qa-redis"
+            - name: DB_PORT_REDIS
+              value: "6379"
+             

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+   name: sp-catalog-qa
+spec: 
+   type: ExternalName
+   externalName: sp-catalog-qa-docdb.cluster-caub6fvh4hyp.ap-south-1.docdb.amazonaws.com

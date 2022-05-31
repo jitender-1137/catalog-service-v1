@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: sp-catalog-qa
+    app.kubernetes.io/instance: sp-catalog-qa-instance
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: sp-catalog-qa
+    app.kubernetes.io/managed-by: kubectl
+  name: sp-catalog-qa
+spec:
+  selector:
+    app: sp-catalog-qa
+  type: NodePort
+  ports:
+   -  protocol: TCP
+      port: 8081
+      targetPort: 8081

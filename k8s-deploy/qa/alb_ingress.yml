@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: sp-catalog-qa-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:746460560240:certificate/feee2d46-afd3-4ca8-bee7-624758de3591
+#   alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+#   alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+#   alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/group.name: "qa-external"
+
+spec:
+  rules:
+    - host: sp-catalog-qa.yaari.com 
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: sp-catalog-qa
+              servicePort: 8081
